@@ -1,0 +1,33 @@
+import cv2
+import numpy as np
+
+
+
+cap = cv2.VideoCapture(1)
+cap.set(3, 1280)
+cap.set(4, 720)
+
+
+while True:
+    _, webcam = cap.read()
+    gray = cv2.cvtColor(webcam, cv2.COLOR_BGR2GRAY)
+    gray = 255 - gray
+    ret, thresh = cv2.threshold(gray, 226, 255, cv2.THRESH_BINARY)
+
+    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+    for c in cnts:
+        x, y, w, h = cv2.boundingRect(c)
+        if w * h > 300 :
+            cv2.rectangle(webcam, (x, y), (x + w, y + h), (0, 255, 255), 3)
+            rx = round(((x + (w // 2)) / 1280)*117,2)
+            ry = round(((y + (h // 2)) / 720)*68, 2)
+            print("image x= " ,(x + (w // 2)), "image y= " ,(y + (h // 2)),"real x= " ,rx,"real y= " ,ry)
+
+    cv2.imshow("webcam", webcam)
+    cv2.imshow("thresh", thresh)
+
+    key = cv2.waitKey(1)
+    if key & 0xFF == ord('q'):
+        break
