@@ -5,7 +5,7 @@ import numpy as np
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
 cap.set(4, 720)
-img2 = cv2.imread(Resources/wall.png)
+img2 = cv2.imread("source/wall.jpg")
 
 while True:
     _, webcam = cap.read()
@@ -21,12 +21,12 @@ while True:
     for c in cnts:
         x, y, w, h = cv2.boundingRect(c)
         if w * h > 15:
-            cv2.rectangle(img2, (x, y), (x + w, y + h), (0, 255, 255), 3)
+            cv2.rectangle(webcam, (x, y), (x + w, y + h), (0, 255, 255), 3)
             rx = round(((x + (w // 2))/1280) * 117, 2)
             ry = round(((y + (h // 2))/720) * 68, 2)
             print("image x = ", x, "image y = ", y, ", real x = ", rx, "real y = ", ry)
 
-    cv2.imshow("webcam", img2)
+    cv2.imshow("webcam", webcam)
     cv2.imshow("thresh", thresh)
 
     key = cv2.waitKey(1)
