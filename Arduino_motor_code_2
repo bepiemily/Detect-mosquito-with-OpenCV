@@ -1,10 +1,13 @@
 #include <Servo.h>
-Servo myservo; 
+Servo servo1; 
+Servo servo2; 
 String inByte;
 int pos;
+int whichservo = 1;
 
 void setup() {
-  myservo.attach(9);
+  servo1.attach(9);
+  servo2.attach(10);
   Serial.begin(9600);
 }
 
@@ -14,9 +17,21 @@ void loop()
     { 
     inByte = Serial.readStringUntil('\n'); // read data until newline
     pos = inByte.toInt();   // change datatype from string to integer        
-    myservo.write(pos);     // move servo
-    delay(15);
-    Serial.print("Servo in position: ");  
-    Serial.println(inByte);
+    if(whichservo == 1)   
+        {       
+        servo1.write(pos);     // move servo
+        Serial.print("Servo1 in position: ");  
+        Serial.println(inByte);
+        whichservo = 2;
+        }
+      else if(whichservo == 2)
+        {       
+        servo2.write(pos);     // move servo
+        Serial.print("Servo2 in position: ");  
+        Serial.println(inByte);
+        whichservo = 1;
+        }  
+    
     }
+    
 }
