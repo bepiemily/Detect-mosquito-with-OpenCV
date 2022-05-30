@@ -4,7 +4,5 @@ import time
 arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
 
 while True:
-    command = input("Servo position:")
-    arduino.write(str(command).encode('utf-8'))
-    reachpos = arduino.readline()
-    print(reachpos)
+    x = input("Servo position:")
+    arduino.write(str(x).encode('utf-8'))
