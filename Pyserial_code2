@@ -1,0 +1,23 @@
+# Importing Libraries
+import serial
+import time
+arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
+
+x:int = 180
+y:int = 180
+w:int = 90
+z:int = 90
+
+while True:
+    #x = input("Servo position:")
+    arduino.write(str(x).encode('utf-8'))
+    time.sleep(1)
+    arduino.write(str(y).encode('utf-8'))
+    time.sleep(1)
+    arduino.write(str(z).encode('utf-8'))
+    time.sleep(1)
+    arduino.write(str(w).encode('utf-8'))
+    time.sleep(1)
+
+    data = arduino.readline()
+    print(data, "\n")
