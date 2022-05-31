@@ -1,0 +1,42 @@
+#include <Servo.h>
+Servo servo1; 
+Servo servo2; 
+String inByte;
+int pos;
+int whichservo = 1;
+
+void setup() {
+  servo1.attach(9);
+  servo2.attach(10);
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  servo1.write(58);
+  servo2.write(1);
+}
+
+void loop()
+{    
+  digitalWrite(13,LOW);
+  delay(1000);
+  while(Serial.available())  // if data available in serial port
+    { 
+    inByte = Serial.readStringUntil('\n'); // read data until newline
+    pos = inByte.toInt();   // change datatype from string to integer        
+    if(whichservo == 1)   
+        {       
+        servo1.write(pos);
+        whichservo = 2;
+        }
+      else if(whichservo == 2)
+        {       
+        servo2.write(pos);
+        whichservo = 1;
+        
+        }  
+        
+    
+    }
+    if(whichservo == 2){
+    digitalWrite(13,HIGH);}
+    delay(1000);
+}
