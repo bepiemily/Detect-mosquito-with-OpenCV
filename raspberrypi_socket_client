@@ -1,0 +1,27 @@
+import socket
+print("client open")
+
+mysocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+host = '169.254.194.194'
+port = 2222
+
+try:
+    mysocket.connect((host, port))
+    print("connected")
+except:
+    print("disconnected")
+
+
+while True:
+
+    msg = input("client send:")
+
+    mysocket.send(msg.encode("utf-8"))
+    print("send success")
+    if msg == "hello":
+        print("hello")
+    if msg == "qq":
+        mysocket.close()
+        print("end\n")
+        exit()
