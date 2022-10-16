@@ -1,0 +1,63 @@
+import cv2
+import socket
+import time
+
+print("client open")
+
+mysocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+host = '169.254.194.194'
+port = 2222
+
+try:
+    mysocket.connect((host, port))
+    print("connected")
+except:
+    print("disconnected")
+
+cap = cv2.VideoCapture(0)
+cap.set(3, 1280)
+cap.set(4, 720)
+img2 = cv2.imread("source/wall.jpg")
+image=cv2.resize(img2,(1280,720))
+
+while True:
+    _, webcam = cap.read()
+    gray1 = cv2.cvtColor(webcam, cv2.COLOR_BGR2GRAY)
+    gray2 = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    result = cv2.absdiff(gray1, gray2)
+    ret, thresh = cv2.threshold(result, 100, 255, cv2.THRESH_BINARY)
+
+    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+    for c in cnts:
+        x, y, w, h = cv2.boundingRect(c)
+        if w * h > 15:
+            cv2.rectangle(webcam, (x, y), (x + w, y + h), (0, 255, 255), 3)
+            rx = ((x + (w // 2))/1280) * 117
+            ry = ((y + (h // 2))/720) * 68
+            rxt = round((58-rx*0.4), 2)
+            ryt = round((1+ry*0.33), 2)
+
+            #print("real x = ", rx, ",real y = ", ry, ", xt =", rxt, ", yt= ", ryt)
+
+    print(" xt =", rxt, ", yt= ", ryt)
+    # msg1 = str(rxt)
+    # msg2 = str(ryt)
+    msg = str(rxt) + ' ' + str(ryt)
+    mysocket.send(msg.encode("utf-8"))
+    print("send rxt ryt success")
+    time.sleep(1)
+    # mysocket.send(msg2.encode("utf-8"))
+    # print("send ryt success")
+    # time.sleep(1)
+
+
+    cv2.imshow("webcam", webcam)
+    cv2.imshow("thresh", thresh)
+
+    key = cv2.waitKey(1)
+    if key & 0xFF == ord('q'):
+      break
