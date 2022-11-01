@@ -1,0 +1,27 @@
+import time
+import pigpio
+import RPi.GPIO as GPIO
+
+servo = 17
+
+pwm = pigpio.pi()
+pwm.set_mode(servo,pigpio.OUTPUT)
+
+pwm.set_PWM_frequency( servo, 50)
+
+def angle_to_duty_cycle(angle):
+    duty_cycle = 500+(angle*(2000/180))
+    return duty_cycle
+
+def switch2deg(deg):
+    dc = angle_to_duty_cycle(deg)
+    pwm.set_servo_pulsewidth( servo, dc)
+
+while True:
+    x = input()
+    xdeg = float(x)
+    switch2deg(xdeg)
+    time.sleep(0.5)
+    
+pwm.set_PWM_dutycycle( servo, 0 )
+pwm.set_PWM_frequency( servo, 0 )
